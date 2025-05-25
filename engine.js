@@ -19,13 +19,13 @@ class UI {
             const button = document.createElement("button")
             button.textContent = btn.label
             button.className = "btn"
-            button.onclick = btn.onclick
+            button.onclick = btn.onClick
             this.buttons.appendChild(button)
         })
     }
 }
 
-const ui = new UI() // Initialize the UI and start the game
+const ui = new UI() // Initialize the UI
 
 function startGame() {
     ui.clearLog()
@@ -39,6 +39,7 @@ function startGame() {
 }
 
 function exploreRoom() {
+    console.log("exploreRoom triggered")
     ui.write("\nYou glance around the room, in the area you see book cases, chairs, a table, and some electronics like a radio and TV.")
     ui.write("\nYou could probably use the chair or book cases to try and block the door.")
 }
@@ -46,3 +47,6 @@ function exploreRoom() {
 function lockDoor() {
     ui.write("\nYou lock the door behind you, the door could still be busted open, but its better than nothing!")
 }
+
+
+startGame() // Start the game
