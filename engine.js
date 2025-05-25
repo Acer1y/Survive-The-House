@@ -1,3 +1,5 @@
+import { House } from "/the_house.js"
+
 class UI {
     constructor() {
         this.log = document.getElementById("log")
@@ -5,8 +7,24 @@ class UI {
     }
 
     write(text) {
-        this.log.textContent += text + "\n"
-        this.log.scrollTop = this.log.scrollHeight
+        const entry = document.createElement("div");
+        entry.className = "log-entry";
+        entry.textContent = text;
+        this.log.appendChild(entry);
+        this.log.scrollTop = this.log.scrollHeight;
+
+        // Check if too many entries
+        if (this.log.children.length > 5) {
+            const oldEntry = this.log.children[0];
+            oldEntry.classList.add("fade-out");
+
+            // Remove it after fade animation
+            setTimeout(() => {
+                if (this.log.contains(oldEntry)) {
+                    this.log.removeChild(oldEntry);
+                }
+            }, 1000); // match fade duration
+        }
     }
 
     clearLog() {
@@ -42,11 +60,29 @@ function exploreRoom() {
     console.log("exploreRoom triggered")
     ui.write("\nYou glance around the room, in the area you see book cases, chairs, a table, and some electronics like a radio and TV.")
     ui.write("\nYou could probably use the chair or book cases to try and block the door.")
+
+    ui.setButtons([
+        { label: "Barricade with Chair", onClick: barricadeWithChair },
+        { label: "Barricade with Bookcase", onClick: barricadeWithBookcase }
+    ])
 }
+
+
+const house = new House()
 
 function lockDoor() {
-    ui.write("\nYou lock the door behind you, the door could still be busted open, but its better than nothing!")
+    house.lockDoor();
+    ui.write(house.getDoorStatus())
 }
 
+function barricadeWithBookcase() {
+    house.barricadeDoor("bookcase")
+    ui.write(house.getDoorStatus())
+}
+
+function barricadeWithChair() {
+    house.barricadeDoor("chair")
+    ui.write(house.getDoorStatus())
+}
 
 startGame() // Start the game
