@@ -44,16 +44,15 @@ class UI {
 }
 
 const ui = new UI() // Initialize the UI
+const house = new House(ui)
 
 function startGame() {
     ui.clearLog()
     ui.write("You found a house to take shelter in from whatever is happening outside.")
     ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
-    ui.write("While the door is closed tight, the house is lit dimly and you still need make they can't get in.")
-    ui.setButtons([
-        { label: "Explore the room", onClick: exploreRoom },
-        { label: "Lock the Door", onClick: lockDoor}
-    ])
+    ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
+
+    house.showIntroOptions()
 }
 
 function exploreRoom() {
@@ -61,28 +60,9 @@ function exploreRoom() {
     ui.write("\nYou glance around the room, in the area you see book cases, chairs, a table, and some electronics like a radio and TV.")
     ui.write("\nYou could probably use the chair or book cases to try and block the door.")
 
-    ui.setButtons([
-        { label: "Barricade with Chair", onClick: barricadeWithChair },
-        { label: "Barricade with Bookcase", onClick: barricadeWithBookcase }
-    ])
+    house.showBarricadeOptions() 
+
 }
 
-
-const house = new House()
-
-function lockDoor() {
-    house.lockDoor();
-    ui.write(house.getDoorStatus())
-}
-
-function barricadeWithBookcase() {
-    house.barricadeDoor("bookcase")
-    ui.write(house.getDoorStatus())
-}
-
-function barricadeWithChair() {
-    house.barricadeDoor("chair")
-    ui.write(house.getDoorStatus())
-}
 
 startGame() // Start the game
