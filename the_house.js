@@ -4,7 +4,10 @@ export class House {
         this.doorDurability = 0;
         this.isDoorLocked = false;
         this.barricades = []
+        this.noiseLevel=0
+        this.noiseDecayTimer = null
     }
+
     lockDoor() {
         if (!this.isDoorLocked) {
             this.isDoorLocked = true;
@@ -52,7 +55,7 @@ export class House {
             this.ui.write("You wedge a chair under the handle. Not Perfect, but it should hold for a bit longer than the lock alone.")
         }
     }
-       
+
     getDoorStatus() {
         return `Door Durability: ${this.doorDurability}`
     }
