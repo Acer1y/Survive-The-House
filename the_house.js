@@ -17,6 +17,8 @@ export class House {
         } else {
             this.ui.write("the door is already locked.")
         }
+
+        this.showBarricadeOptions()
     }
 
     showIntroOptions() {
@@ -54,8 +56,6 @@ export class House {
     }
 
     barricadeDoor(item) {
-        console.log("barricade door was called")
-        console.log(item)
         if (item === "bookcase") {
             this.doorDurability += 20;
             this.barricades.push("bookcase");
