@@ -52,17 +52,48 @@ class GameEngine {
         this.noiseLevel = 0
     }
 
-    startGame() {
-        //this.ui.clearLog()
-        this.ui.write("You found a house to take shelter in from whatever is happening outside.")
-        this.ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
-        this.ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
+    tick() {
 
-        this.house.showIntroOptions()
+       //console.log(`minutes: ${minutes} and bool check ${minutes >= 60} and hours = ${hours} `)
+        this.time.minute += 1
+            if (this.time.minute >= 60) {
+                this.time.minute = 0;
+                this.time.hours += 1
+                console.log(`${this.time.minute} and ${this.time.hours} and ${this.time.day}`)
+                
+            }
+
+            if (this.time.hours >= 24) {
+                this.time.hours = 0
+                this.time.day += 1
+            }
     }
+
+        startGame() {
+            // Start the game heart beat
+            this.tickLoop = setInterval(() => {
+                this.tick(), 1000
+            })
+
+            // This area will be for the zombie check.
+
+            this.ui.clearLog()
+            this.ui.write("You found a house to take shelter in from whatever is happening outside.")
+            this.ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
+            this.ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
+
+            this.house.showIntroOptions()
+    }
+    
+
 
 }
 
 const ui = new UI()
 const game = new GameEngine(ui)
 game.startGame()
+
+setInterval(() => {
+    game.tick()
+    //console.log(game.time.minute)
+}, 1000);

@@ -4,7 +4,6 @@ export class House {
         this.doorDurability = 0;
         this.isDoorLocked = false;
         this.barricades = []
-        this.noiseLevel=0
         this.noiseDecayTimer = null
     }
 
