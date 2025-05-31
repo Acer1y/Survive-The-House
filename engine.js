@@ -69,20 +69,52 @@ class GameEngine {
             }
     }
 
-        startGame() {
-            // Start the game heart beat
-            this.tickLoop = setInterval(() => {
-                this.tick() // This is in milliseconds, 1000 = 1 second so 60 seconds will be 1 in game hour
-            }, 1000)
+    isNightTime() {
+        return this.time.hours >= 20 || this.time.hours < 6;
+    }
 
-            // This area will be for the zombie check.
+    zombieAttack() {
+        const damage = Math.floor(Math.random() * 10) + 5; // Damage 5–15
+        this.doorDurability -= damage;
 
-            this.ui.clearLog()
-            this.ui.write("You found a house to take shelter in from whatever is happening outside.")
-            this.ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
-            this.ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
+        this.ui.write(`A zombie beats its fist against door, the door and barricade won't take much of this.`);
+        this.ui.write(`Door Durability: ${this.doorDurability}`);
 
-            this.house.showIntroOptions()
+        if (this.doorDurability <= 0) {
+            this.ui.write("The barricade breaks! Zombies burst in!");
+            // Decide on what happens here later.
+        }
+    }
+
+    zombieAttackCheck() {
+        const baseChance = this.noiseLevel * 0.05 // Base chance of 5%
+        const nightMultiplier = this.isNightTime() ? 2.0 : 0.5
+        const finalChance = baseChance * nightMultiplier 
+
+        if (Math.random() < finalChance) {
+            this.zombieAttack()
+        }
+    }
+
+    startGame() {
+        // Start the game heart beat
+        this.tickLoop = setInterval(() => {
+            this.tick() // This is in milliseconds, 1000 = 1 second so 60 seconds will be 1 in game hour
+        }, 1000)
+
+        // This area will be for the zombie check.
+        this.zombieCheck = setInterval(() => {
+            if (this.noiseLevel > 0) {
+                this.zombieAttackCheck()
+            }
+        }, 1000)
+
+        this.ui.clearLog()
+        this.ui.write("You found a house to take shelter in from whatever is happening outside.")
+        this.ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
+        this.ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
+
+        this.house.showIntroOptions()
     }
     
 
