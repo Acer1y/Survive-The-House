@@ -5,6 +5,7 @@ export class House {
         this.isDoorLocked = false;
         this.barricades = []
         this.noiseDecayTimer = null
+        this.noiseLevel = 0
     }
 
     lockDoor() {
@@ -59,15 +60,19 @@ export class House {
             this.doorDurability += 20;
             this.barricades.push("bookcase");
             this.ui.write("You push a bookcase in front of the door. That should hold better.")
-            this.increaseNoise(20, 15000)
+            this.noiseLevel += 20
+            //this.increaseNoise(20)
         } else if (item === "chair") {
             this.doorDurability += 10;
             this.barricades.push("chair")
             this.ui.write("You wedge a chair under the handle. Not Perfect, but it should hold for a bit longer than the lock alone.")
-            this.increaseNoise(10, 10000)
+            this.noiseLevel += 10
+            //this.increaseNoise(10)
         }
 
         this.barricades.push(item)
+
+        console.log(this.noiseLevel)
 
         this.showBarricadeOptions() // Redraw the barricade options to remove anything already used.
     }

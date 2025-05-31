@@ -49,24 +49,28 @@ class GameEngine {
         this.ui = ui // Instantiate the UI class
         this.house = new House(ui) // Call house logic
         this.time = {day: 1, hours: 6, minute: 0}
-        this.noiseLevel = 0
     }
 
     tick() {
 
        //console.log(`minutes: ${minutes} and bool check ${minutes >= 60} and hours = ${hours} `)
+       //console.log(`Tick was called, check this.house: ${this.house.noiseLevel}`)
         this.time.minute += 1
             if (this.time.minute >= 60) {
                 this.time.minute = 0;
                 this.time.hours += 1
-                console.log(`${this.time.minute} and ${this.time.hours} and ${this.time.day}`)
-                
             }
 
             if (this.time.hours >= 24) {
                 this.time.hours = 0
                 this.time.day += 1
             }
+
+            if (this.house.noiseLevel > 0) {
+                this.zombieAttackCheck()
+            }
+            console.log(this.house.noiseLevel)
+            //console.log(`${this.time.minute} and ${this.time.hours} and ${this.time.day}`)
     }
 
     isNightTime() {
@@ -75,7 +79,7 @@ class GameEngine {
 
     zombieAttack() {
         const damage = Math.floor(Math.random() * 10) + 5; // Damage 5–15
-        this.doorDurability -= damage;
+        this.house.doorDurability -= damage;
 
         this.ui.write(`A zombie beats its fist against door, the door and barricade won't take much of this.`);
         this.ui.write(`Door Durability: ${this.doorDurability}`);
@@ -87,9 +91,12 @@ class GameEngine {
     }
 
     zombieAttackCheck() {
-        const baseChance = this.noiseLevel * 0.05 // Base chance of 5%
+        const baseChance = this.house.noiseLevel * 0.05 // Base chance of 5%
+        const isNight = this.isNightTime()
         const nightMultiplier = this.isNightTime() ? 2.0 : 0.5
         const finalChance = baseChance * nightMultiplier 
+
+        console.log(`Zombie attack check was called. Final Chance = ${finalChance}, and timecheck is: ${isNight}`)
 
         if (Math.random() < finalChance) {
             this.zombieAttack()
@@ -100,14 +107,10 @@ class GameEngine {
         // Start the game heart beat
         this.tickLoop = setInterval(() => {
             this.tick() // This is in milliseconds, 1000 = 1 second so 60 seconds will be 1 in game hour
+     
+            //console.log(this.zombieAttachCheck.)
         }, 1000)
 
-        // This area will be for the zombie check.
-        this.zombieCheck = setInterval(() => {
-            if (this.noiseLevel > 0) {
-                this.zombieAttackCheck()
-            }
-        }, 1000)
 
         this.ui.clearLog()
         this.ui.write("You found a house to take shelter in from whatever is happening outside.")
