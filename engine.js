@@ -1,4 +1,4 @@
-import { House } from "/the_house.js"
+import { House } from ".house/the_house.js"
 
 // Declare the UI class
 class UI {
