@@ -72,8 +72,8 @@ class GameEngine {
         startGame() {
             // Start the game heart beat
             this.tickLoop = setInterval(() => {
-                this.tick(), 1000
-            })
+                this.tick() // This is in milliseconds, 1000 = 1 second so 60 seconds will be 1 in game hour
+            }, 1000)
 
             // This area will be for the zombie check.
 
@@ -92,8 +92,3 @@ class GameEngine {
 const ui = new UI()
 const game = new GameEngine(ui)
 game.startGame()
-
-setInterval(() => {
-    game.tick()
-    //console.log(game.time.minute)
-}, 1000);
