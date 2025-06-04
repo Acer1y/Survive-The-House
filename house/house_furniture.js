@@ -1,4 +1,5 @@
 export const houseObjects = {
+    /*
     lrgBookcase: {
         label: "Large Bookcase",
         durability: 25,
@@ -51,11 +52,14 @@ export const houseObjects = {
         usedFor: ["cooking", "light"],
         room: ["Living Room"]
     },
+
+    */
     Door: {
+        label: "Door",
         usedFor: ["barricadable", "lockable"],
-        room: ["Bedroom", "Basement"],
+        room: ["Bedroom", "Basement", "frontDoor"],
         durability: 5,
-        locked: False
+        locked: false
     }
 }
 

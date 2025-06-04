@@ -1,96 +1,83 @@
-export class House {
-    constructor(ui) {
-        this.ui = ui
-        this.doorDurability = 0;
-        this.isDoorLocked = false;
-        this.barricades = []
-        this.noiseDecayTimer = null
-        this.noiseLevel = 0
+import { houseItems } from "./house_items.js"
+import { houseObjects } from "./house_furniture.js"
+import { houseRooms } from "./house_rooms.js"
+
+function generateHouse(houseRooms, houseObjects, houseItems) {
+    const layout = {
+        rooms: {},
+        furniture: {},
     }
 
-    lockDoor() {
-        if (!this.isDoorLocked) {
-            this.isDoorLocked = true;
-            this.doorDurability += 5;
-            this.ui.write("You locked the door. It won't hold forever, but it's something.")
-            this.increaseNoise(2, 5000)
-        } else {
-            this.ui.write("the door is already locked.")
+    let roomInstanceCounts = {}
+    let furnitureIdCounter = 0
+
+    // Generate the rooms based on the max count property
+    for (const [roomKey, roomDef] of Object.entries(houseRooms)) {
+        const count = roomDef.maxCount || 1
+        roomInstanceCounts[roomKey] = count
+
+        for (let i = 1; i <= count; i++) {
+            const instanceId = `${roomKey}-${i}`
+            layout.rooms[instanceId] = {
+                id: instanceId,
+                name: roomDef.name,
+                type: roomKey,
+                connectedTo: [...(roomDef.connectedRooms || [])],
+                furniture: [],
+                ...(roomDef.startingRoom ? { startingRoom: true} : {}),
+                ...(roomDef.noNoiseBonus ? { noNoiseBonus: true } : {}),
+                ...(roomDef.durability ? { durabiilty: roomDef.durability } : {}),
+
+            }
         }
-
-        this.showBarricadeOptions()
     }
 
-    showIntroOptions() {
-        this.ui.setButtons([
-            { label: "Explore the room", onClick: () => this.exploreRoom() },
-            { label: "Lock the Door", onClick: () => this.lockDoor() }
-        ]);
-    }
-    
-    exploreRoom() {
-        this.ui.write("You look around the room and see bookcases, a chair, and various electronics like a radio, TV, etc.");
-        this.showBarricadeOptions();
-    }
+    // Add furniture to the defined rooms based on furniture.room[] 
+    for (const [furnitureKey, furnitureDef] of Object.entries(houseObjects)) {
+        for (const targetRoom of furnitureDef.room || []) {
+            const roomKeys = Object.keys(layout.rooms).filter(r => r.startsWith(targetRoom.toLowerCase()))
+            for (const roomId of roomKeys) {
+                const furnitureId = `furn-${furnitureIdCounter++}`
+                const placedFurniture = {
+                    id: furnitureId,
+                    label: furnitureDef.label || furnitureKey,
+                    type: furnitureKey,
+                    room: roomId,
+                    durability: furnitureDef.durability || null,
+                    usedFor: furnitureDef.usedFor || [],
+                    resources: furnitureDef.resources || {},
+                    items: []
+                }
+                ;
 
-    showBarricadeOptions() {
-        const buttons = []
+                // Now populate the items if defined
+                if (furnitureDef.items) {
+                    for (const itemName of furnitureDef.items) {
+                        const itemDef = Object.values(houseItems).find(i => i.name === itemName)
+                        if (itemDef) {
+                            // Create simple spawn logic, this is 75% chance an item appears
+                            if (Math.random() < 0.75) {
+                                placedFurniture.items.push(itemDef.name)
+                            } else {
+                                console.warn(`Item "${itemName}" does not exist in houseItems`)
+                            }
 
-        if (!this.barricades.includes("chair")) {
-            buttons.push({ label: "Barricade with Chair", onClick: () => this.barricadeDoor("chair") });
+                        }
+                    }
+                    
+
+                }
+                layout.furniture[furnitureId] = placedFurniture
+                layout.rooms[roomId].furniture.push(furnitureId)
+
+            }
         }
-
-        if (!this.barricades.includes("bookcase")) {
-            buttons.push({ label: "Barricade with Bookcase", onClick: () => this.barricadeDoor("bookcase") });
-        }
-
-        if (!this.isDoorLocked) {
-            buttons.push({ label: "Lock the Door", onClick: () => this.lockDoor() });
-        }
-
-        if (buttons.length === 0) {
-            this.ui.write("You've used everything in the room that could help block the door.");
-        }
-
-        this.ui.setButtons(buttons);
     }
-
-    barricadeDoor(item) {
-        if (item === "bookcase") {
-            this.doorDurability += 20;
-            this.barricades.push("bookcase");
-            this.ui.write("You push a bookcase in front of the door. That should hold better.")
-            this.noiseLevel += 20
-            //this.increaseNoise(20)
-        } else if (item === "chair") {
-            this.doorDurability += 10;
-            this.barricades.push("chair")
-            this.ui.write("You wedge a chair under the handle. Not Perfect, but it should hold for a bit longer than the lock alone.")
-            this.noiseLevel += 10
-            //this.increaseNoise(10)
-        }
-
-        this.barricades.push(item)
-
-        console.log(this.noiseLevel)
-
-        this.showBarricadeOptions() // Redraw the barricade options to remove anything already used.
-    }
-
-    getDoorStatus() {
-        return `Door Durability: ${this.doorDurability}`
-    }
-
-    increaseNoise(amount, duration) {
-        this.noiseLevel += amount
-        this.ui.write(`Hopefully the noise from that didn't attract anyone's attention!`)
-
-        if (this.noiseDecayTimer) {
-            clearTimeout(this.noiseDecayTimer)
-        }
-
-        this.noiseDecayTimer = setTimeout(() =>{
-            this.noiseLevel = 0
-        })
-    }
+    return layout
 }
+
+
+
+export const houseLayout = generateHouse(houseRooms, houseObjects, houseItems);
+
+console.log(houseLayout)

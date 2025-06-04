@@ -3,7 +3,11 @@ export const houseItems = {
         name: "Useless Book",
         attribs: ["Combustable"]
     },
-    lockPickingBook: {
+
+
+}
+
+/*    lockPickingBook: {
         name: "Lock Picking for Dummies",
         attribs: ["Skill Book"],
         skill: ["Lock Picking"],
@@ -33,13 +37,6 @@ export const houseItems = {
     },
     animalBook: {
         name: "Animal Hunsbandry: Not it's not about furries!",
-        attribs: ["Skill Book"],
-        skill: ["Beast Tamer"],
-        xp: 100,
-        maxVol: 10,
-    },
-    huntingBook: {
-        name: "Trapping: The Opposite of Animal Hunsbandry",
         attribs: ["Skill Book"],
         skill: ["Beast Tamer"],
         xp: 100,
@@ -174,4 +171,5 @@ export const houseItems = {
         usedFor: ["fire"]
     }
 
-}
+    */
+

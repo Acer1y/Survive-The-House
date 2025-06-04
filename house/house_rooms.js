@@ -1,6 +1,6 @@
-export const houseItems = {
+export const houseRooms = {
     livingRoom: {
-        name: "Living Room",
+        name: "livingRoom",
         connectedRooms: ["Hallway", "Kitchen"],
         furniture: [],
         maxCount: 1
@@ -12,26 +12,24 @@ export const houseItems = {
         connectedRooms: ["Hallway"]
     },
     kitchen: {
-        name: Kitchen,
+        name: "Kitchen",
         maxCount: 1,
         furniture: [],
         connectedRooms: ["Living Room"]
     },
     basement: {
-        name: Basement,
+        name: "Basement",
         maxCount: 1,
         furniture: [],
         connectedRooms: ["Stairs"],
-        noNoiseBonus: True
+        noNoiseBonus: true
     },
     frontDoor: {
-        name: "Front Door",
+        name: "frontdoor",
         maxCount: 1,
-        furniture: [],
+        furniture: ["Door"],
         connectedRooms: ["Living Room"],
         durability: 5,
         startingRoom: true
     }
-
-
 }

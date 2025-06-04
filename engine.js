@@ -1,10 +1,10 @@
-import { House } from "./house/the_house.js"
+import { houseLayout } from "./house/the_house.js"
 import { UI } from "/ui.js"
 
 class GameEngine {
     constructor(ui) {
         this.ui = ui // Instantiate the UI class
-        this.house = new House(ui) // Call house logic
+        this.house = houseLayout // Call house logic
         this.time = {day: 1, hours: 6, minute: 0}
     }
 
@@ -22,11 +22,12 @@ class GameEngine {
                 this.time.hours = 0
                 this.time.day += 1
             }
-
+            /*
             if (this.house.noiseLevel > 0) {
                 this.zombieAttackCheck()
             }
-            console.log(this.house.noiseLevel)
+            */
+            //console.log(this.house.noiseLevel)
             //console.log(`${this.time.minute} and ${this.time.hours} and ${this.time.day}`)
     }
 
@@ -36,7 +37,7 @@ class GameEngine {
 
     zombieAttack() {
         const damage = Math.floor(Math.random() * 10) + 5; // Damage 5–15
-        this.house.doorDurability -= damage;
+        //this.house.doorDurability -= damage;
 
         this.ui.write(`A zombie beats its fist against door, the door and barricade won't take much of this.`);
         this.ui.write(`Door Durability: ${this.doorDurability}`);
@@ -48,7 +49,7 @@ class GameEngine {
     }
 
     zombieAttackCheck() {
-        const baseChance = this.house.noiseLevel * 0.05 // Base chance of 5%
+        //const baseChance = this.house.noiseLevel * 0.05 // Base chance of 5%
         const isNight = this.isNightTime()
         const nightMultiplier = this.isNightTime() ? 2.0 : 0.5
         const finalChance = baseChance * nightMultiplier 
@@ -74,7 +75,7 @@ class GameEngine {
         this.ui.write("Your heart is still racing, and you hear the growls from those THINGS from other side of the door.")
         this.ui.write("While the door is closed tight, the house is lit dimly and you still need to make sure they can't get in.")
 
-        this.house.showIntroOptions()
+        //this.house.showIntroOptions()
     }
     
 
