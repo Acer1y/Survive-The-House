@@ -11,6 +11,32 @@ function generateHouse(houseRooms, houseObjects, houseItems) {
     let roomInstanceCounts = {}
     let furnitureIdCounter = 0
 
+    // Generate proper number of rooms using max_count and math random method.
+    for (const [roomKey, roomDef] of Object.entries(houseRooms)) {
+        const count = (roomDef.maxCount > 1)
+            ? Math.floor(Math.random() * roomDef.maxCount) + 1
+            : roomDef.maxCount
+
+        roomInstanceCounts[roomKey] = count
+
+        for (let i = 1; i <= count; i++) {
+            const instanceId = `${roomKey}-${i}`
+            layout.rooms[instanceId] = {
+                id: instanceId,
+                name: roomDef.name,
+                type: roomKey,
+                connectedTo: [...(roomDef.connectedRooms || [])],
+                furniture: [],
+                ...(roomDef.startingRoom ? { startingRoom: true } : {}),
+                ...(roomDef.noNoiseBonus ? { noNoiseBonus: true } : {}),
+                ...(roomDef.durability ? { durability: roomDef.durability } : {}),
+            }
+        }
+    }
+
+
+    // Old room logic below
+    /*
     // Generate the rooms based on the max count property
     for (const [roomKey, roomDef] of Object.entries(houseRooms)) {
         const count = roomDef.maxCount || 1
@@ -31,7 +57,7 @@ function generateHouse(houseRooms, houseObjects, houseItems) {
             }
         }
     }
-
+    */
     // Add furniture to the defined rooms based on furniture.room[] 
     for (const [furnitureKey, furnitureDef] of Object.entries(houseObjects)) {
         for (const targetRoom of furnitureDef.room || []) {
